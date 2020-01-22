@@ -11,7 +11,8 @@ import primitives.*;
  *
  */
 public abstract class Geometry implements Intersectable {
-	public Color emmission = new Color(0, 0, 0);
+	private Color emmission;
+	Material material;
 
 	/**
 	 * Calculates unit vector orthogonal to the tangent plane at the point (which is
@@ -20,5 +21,17 @@ public abstract class Geometry implements Intersectable {
 	 * @param p point of tangent...
 	 * @return normal vector
 	 */
-	abstract Vector getNormal(Point3D p);
+	public abstract Vector getNormal(Point3D p);
+
+	/**
+	 * 
+	 * @return getEmmission
+	 */
+	public Color getEmmission() {
+		return emmission;
+	}
+
+	public Material getMaterial() {
+		return material;
+	}
 }

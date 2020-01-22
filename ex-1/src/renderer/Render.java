@@ -4,7 +4,9 @@ import java.util.*;
 
 import elements.*;
 import geometries.Intersectable.GeoPoint;
+import geometries.*;
 import primitives.*;
+import primitives.Vector;
 import scene.Scene;
 
 public class Render {
@@ -30,8 +32,8 @@ public class Render {
 				} else {
 					List<GeoPoint> intersectionPoints = scene.getGeometries().findIntersections(ray);
 					GeoPoint closestPoint = getClosestPoint(intersectionPoints);
-					if(scene.getAmbientLight()!=null)
-					IWriter.writePixel(j, i, calcColor(closestPoint).getColor());
+					if (scene.getAmbientLight() != null)
+						IWriter.writePixel(j, i, calcColor(closestPoint).getColor());
 				}
 			}
 		}
@@ -61,9 +63,17 @@ public class Render {
 	 * @param point
 	 * @return color
 	 */
-	private Color calcColor(GeoPoint point) {
-		return scene.getAmbientLight().getIntensity();
-		}
+	private Color calcColor(GeoPoint intersection) {
+		Color color = new Color(scene.getAmbientLight().getIntensity());
+		color = color.add(intersection.geometry.getEmmission());
+		Vector l = new Vector(intersection.point.subtract(scene.getCamera().getLocation()));
+		Vector n = new Vector(intersection.geometry.getNormal(intersection.point));
+		double d=l.dotProduct(n);
+		d*=intersection.geometry.getMaterial().getkD();
+		color=color.add(colors)
+		return color;
+	}
+
 	/**
 	 * print Grid
 	 * 

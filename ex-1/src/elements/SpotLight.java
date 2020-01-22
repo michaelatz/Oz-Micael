@@ -19,14 +19,12 @@ public class SpotLight extends PointLight {
 	}
 
 	public Color getIntensity(Point3D p) {
-		if (p.distance(position) == 0) {
-			return _intensity.scale(0);
-		}
-		Vector l = p.subtract(position);
-		if (dir.dotProduct(l) < 0)
-			return _intensity.scale(0);
 		double d = position.distance(p);
-		return _intensity.scale(dir.dotProduct(l) / (KC + KL * d + KQ * d * d));
+		Vector l = p.subtract(position);
+		if (d == 0 || dir.dotProduct(l) < 0) {
+			return getIntensity().scale(0);
+		}
+		return getIntensity().scale(dir.dotProduct(l) / (KC + KL * d + KQ * d * d));
 
 	}
 }

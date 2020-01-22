@@ -19,7 +19,7 @@ public class DirectionaLight extends Light {
 	 * @return I0
 	 */
 	public Color getIntensity() {
-		return this._intensity;
+		return this.getIntensity();
 	}
 	/**
 	 * Direction getter

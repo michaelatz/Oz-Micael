@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import geometries.*;
 import primitives.*;
+import geometries.Intersectable.GeoPoint;
 
 public class SphereTest {
 
@@ -28,7 +29,7 @@ public class SphereTest {
 		Sphere sph = new Sphere(1.0, new Point3D(0.0, 0.0, 0.0));
 		// ray intersects the sphere(tow points) 1
 		Ray ray = new Ray(new Vector(1, 1, 0), new Point3D(-2, -1, 0));
-		List<Point3D> expected = Arrays.asList(new Point3D(0, 1, 0), new Point3D(-1, 0, 0));
+		List<GeoPoint> expected = Arrays.asList(new GeoPoint(sph,new Point3D(0, 1, 0)), new GeoPoint(sph,new Point3D(-1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray isn't intersects the sphere 2
 		ray = new Ray(new Vector(1, 2, 0), new Point3D(-2, 0, 0));
@@ -36,7 +37,7 @@ public class SphereTest {
 		// ray intersects the sphere(one point-starts on the sphere, pass in he center)
 		// 3
 		ray = new Ray(new Vector(1, 0, 0), new Point3D(-1, 0, 0));
-		expected = Arrays.asList(new Point3D(1, 0, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray isn't intersects the sphere(Tangent) 4
 		ray = new Ray(new Vector(0, 1, 0), new Point3D(-1, -1, 0));
@@ -50,12 +51,12 @@ public class SphereTest {
 		assertEquals("Find intersection function error", null, sph.findIntersections(ray));
 		// ray intersects the sphere(one point-starts in the center of the sphere) 7
 		ray = new Ray(new Vector(1, 0, 0), new Point3D(0, 0, 0));
-		expected = Arrays.asList(new Point3D(1, 0, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray intersects the sphere-starts behind the sphere(pass the center)(tow
 		// points) 8
 		ray = new Ray(new Vector(1, 0, 0), new Point3D(-2, 0, 0));
-		expected = Arrays.asList(new Point3D(1, 0, 0), new Point3D(-1, 0, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(1, 0, 0)), new GeoPoint(sph,new Point3D(-1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray intersects the sphere(tow points?) -ray starts in the opposite direction
 		// 9
@@ -63,11 +64,11 @@ public class SphereTest {
 		assertEquals("Find intersection function error", null, sph.findIntersections(ray));
 		// ray intersects the sphere(one point) -ray starts inside! the sphere 10
 		ray = new Ray(new Vector(3, 1, 0), new Point3D(-0.5, 0.5, 0));
-		expected = Arrays.asList(new Point3D(0.534846922835, 0.8449489742783, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(0.534846922835, 0.8449489742783, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray intersects the sphere(one point) -ray starts on! the sphere 11
 		ray = new Ray(new Vector(3, 1, 0), new Point3D(-0.934846922835, 0.3550510257217, 0));
-		expected = Arrays.asList(new Point3D(0.534846922835, 0.8449489742783, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(0.534846922835, 0.8449489742783, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray intersects the sphere(one point) -ray starts on! the sphere, ray is in
 		// the opposite side 12
@@ -87,11 +88,11 @@ public class SphereTest {
 		// ray intersects the sphere(ray starts in the sphere- the opposite side of the
 		// ray passed the center) 16
 		ray = new Ray(new Vector(-1, 0, 0), new Point3D(-0.5, 0, 0));
-		expected = Arrays.asList(new Point3D(-1, 0, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(-1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 		// ray intersects the sphere(ray starts in the sphere- ray passed the center) 17
 		ray = new Ray(new Vector(-1, 0, 0), new Point3D(0.5, 0, 0));
-		expected = Arrays.asList(new Point3D(-1, 0, 0));
+		expected = Arrays.asList(new GeoPoint(sph,new Point3D(-1, 0, 0)));
 		assertEquals("Find intersection function error", expected, sph.findIntersections(ray));
 	}
 }

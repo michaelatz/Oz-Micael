@@ -63,6 +63,7 @@ public class Polygon extends Geometry {
                 return null;
             }
         }
+        intersections.get(0).geometry = this;
         return intersections;
     }
 

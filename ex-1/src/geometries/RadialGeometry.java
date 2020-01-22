@@ -15,6 +15,7 @@ public abstract class RadialGeometry extends Geometry {
 	// ***************** Constructors ********************** //
 	/**
 	 * Constructor with radius
+	 * 
 	 * @param _radius
 	 * @throws IllegalArgumentException when radius "is smaller" than zero
 	 */
@@ -35,5 +36,4 @@ public abstract class RadialGeometry extends Geometry {
 	public double getRadius() {
 		return _radius;
 	}
-	abstract Vector getNormal(Point3D p);
 }

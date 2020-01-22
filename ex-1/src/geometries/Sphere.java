@@ -3,8 +3,6 @@ package geometries;
 import java.util.ArrayList;
 import java.util.List;
 
-import primitives.Ray;
-import primitives.Vector;
 import primitives.*;
 import static primitives.Util.*;
 
@@ -56,9 +54,7 @@ public class Sphere extends RadialGeometry {
 		Vector v = ray.getV();
 		if (o.equals(p0)) {
 			intersectionPoint = new ArrayList<>();
-			GeoPoint p=null;
-			p.point= p0.add(v.scale(this._radius));// there is only one intersection point (on the sphere)
-			p.geometry=sph;
+			GeoPoint p=new GeoPoint(this,p0.add(v.scale(this._radius)));
 			intersectionPoint.add(p);
 			return intersectionPoint;
 		}
@@ -75,20 +71,15 @@ public class Sphere extends RadialGeometry {
 		double t2 = alignZero(tm - th);// p2's scalar
 		if (t1 > 0) {// t>0
 			intersectionPoint = new ArrayList<>();
-			GeoPoint p1=null;
-			p1.point= p0.add(v.scale(t1));
-			p1.geometry=sph;
+			GeoPoint p1=new GeoPoint(this,p0.add(v.scale(t1)));
 			intersectionPoint.add(p1);
 		}
 		if (t2 > 0) {// t>=0
 			if (intersectionPoint == null)
 				intersectionPoint = new ArrayList<>();
-			GeoPoint p2=null;
-			p2.point= p0.add(v.scale(t2));
-			p2.geometry=sph;
+			GeoPoint p2=new GeoPoint(this,p0.add(v.scale(t2)));
 			intersectionPoint.add(p2);
 		}
-
 		return intersectionPoint;
 	}
 }

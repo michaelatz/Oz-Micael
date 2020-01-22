@@ -9,6 +9,7 @@ import org.junit.Test;
 import geometries.*;
 import primitives.*;
 import primitives.Vector;
+import geometries.Intersectable.GeoPoint;
 
 public class PlaneTest {
 	static Point3D p1 = new Point3D(1, 0, 0);
@@ -27,11 +28,11 @@ public class PlaneTest {
 	public void findIntersectionsTest() {
 		//ray intersects and orthogonal to the plane 1
 		Ray ray=new Ray(new Vector(0, 0, 1),new Point3D(0, 0, -1));
-		List<Point3D> expected = Arrays.asList(new Point3D(0, 0, 0));
+		List<GeoPoint> expected = Arrays.asList(new GeoPoint(pl,new Point3D(0, 0, 0)));
 		assertEquals("Find intersection function error", expected, pl.findIntersections(ray));
         //ray intersects the plane (not orthogonal) 2
         ray=new Ray(new Vector(1, 1, 1),new Point3D(-1, -1, -1));
-		expected = Arrays.asList(new Point3D(0, 0, 0));
+		expected = Arrays.asList(new GeoPoint(pl,new Point3D(0, 0, 0)));
         assertEquals("Find intersection function error", expected, pl.findIntersections(ray));
         //ray parallel (not included in the plane) 3
         ray=new Ray(new Vector(1, 0, 0),new Point3D(0, 0, -1));

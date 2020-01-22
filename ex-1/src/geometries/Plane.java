@@ -74,11 +74,10 @@ public class Plane extends Geometry {
 		double t = alignZero(numer / nv); // if t<0 return null
 		if (t > 0) {
 			List<GeoPoint> intersectionPoint = new ArrayList<>();
-			GeoPoint p=null;
 			Plane plane=new Plane(q0, n);
-			p.point = p0.add(v.scale(t));
-			p.geometry=plane;// normal cases of intersection
+			GeoPoint p=new GeoPoint(plane, p0.add(v.scale(t)));
 			intersectionPoint.add(p);
+			intersectionPoint.get(0).geometry = this;
 			return intersectionPoint;
 		}
 

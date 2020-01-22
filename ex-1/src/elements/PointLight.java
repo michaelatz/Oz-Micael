@@ -61,7 +61,7 @@ public class PointLight extends Light {
 	}
 	public Color getIntensity(Point3D p) {
 		double d=this.position.distance(p);
-		return _intensity.scale(KC+KL*d+KQ*d*d);
+		return getIntensity().scale(KC+KL*d+KQ*d*d);
 	}
 	
 }

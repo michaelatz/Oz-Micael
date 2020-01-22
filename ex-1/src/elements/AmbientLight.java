@@ -30,7 +30,7 @@ double ka;
 	 * @return 
 	 */
 	public Color getIntensity() {
-		return this._intensity.scale(ka);
+		return this.getIntensity().scale(ka);
 	}
 	
 }
