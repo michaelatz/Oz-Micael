@@ -25,6 +25,18 @@ public class Tube extends RadialGeometry {
 		super(radius);
 		_axisRay = axisRay;
 	}
+	
+	/**
+	 * constructs a tube from axis and radius and color
+	 *
+	 * @param axisRay: the axis of the tube
+	 * @param radius:  the radius of the tube
+	 * @param color
+	 */
+	public Tube(Color color, Ray axisRay, double radius) {
+		super(color, radius);
+		_axisRay = axisRay;
+	}
 
 	// ***************** Getters/Setters ********************** //
 	/**

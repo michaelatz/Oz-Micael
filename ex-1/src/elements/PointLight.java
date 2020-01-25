@@ -1,8 +1,9 @@
 package elements;
 
 import primitives.*;
+import elements.*;
 
-public class PointLight extends Light {
+public class PointLight extends Light implements LightSource{
 	Point3D position;
 	double KC, KL, KQ;
 	
@@ -62,6 +63,11 @@ public class PointLight extends Light {
 	public Color getIntensity(Point3D p) {
 		double d=this.position.distance(p);
 		return getIntensity().scale(KC+KL*d+KQ*d*d);
+	}
+
+	@Override
+	public Vector getL(Point3D p) {
+		return p.subtract(position);
 	}
 	
 }

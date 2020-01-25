@@ -27,6 +27,19 @@ public class Sphere extends RadialGeometry {
 		super(_radius);
 		this._center = _center;
 	}
+	
+	/**
+	 * Constructor with radius, center point and color
+	 * 
+	 * @param _radius (of the sphere)
+	 * @param _center (of the sphere)
+	 * @param color
+	 */
+	public Sphere(Color color, double _radius, Point3D _center) {
+		super(color,_radius);
+		this._center = _center;
+	}
+
 
 	// ***************** Operations ******************** //
 	/**

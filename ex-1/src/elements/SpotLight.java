@@ -20,11 +20,10 @@ public class SpotLight extends PointLight {
 
 	public Color getIntensity(Point3D p) {
 		double d = position.distance(p);
-		Vector l = p.subtract(position);
+		Vector l = getL(p);
 		if (d == 0 || dir.dotProduct(l) < 0) {
 			return getIntensity().scale(0);
 		}
 		return getIntensity().scale(dir.dotProduct(l) / (KC + KL * d + KQ * d * d));
-
 	}
 }

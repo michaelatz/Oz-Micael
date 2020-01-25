@@ -33,6 +33,27 @@ public class Polygon extends Geometry {
 		_points = Arrays.asList(points);
 	}
 
+	/**
+	 * Constructs a polygon with points and color
+	 * 
+	 * @param points
+	 * @param color
+	 * @throws IllegalArgumentException when the points are not on the same plane
+	 */
+	public Polygon(Color color, Point3D... points) {
+		setEmmission(color);
+		if (points.length < 3)
+			throw new IllegalArgumentException("Polygon must have at least 3 vertices");
+		Point3D p1 = points[0];
+		Point3D p2 = points[1];
+		Point3D p3 = points[2];
+		_plane = new Plane(p1, p2, p3);
+		Vector n = _plane.getNormal(p1);
+		for (int i = 3; i < points.length; i++)
+			if (!isZero(p1.subtract(points[i]).dotProduct(n)))
+				throw new IllegalArgumentException("Polygon's vertices must resize in the same plane");
+		_points = Arrays.asList(points);
+	}
 	// ***************** Operation ******************** //
 	 /**
      * finds intersections of the ray with the polygon

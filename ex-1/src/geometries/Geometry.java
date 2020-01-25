@@ -11,7 +11,7 @@ import primitives.*;
  *
  */
 public abstract class Geometry implements Intersectable {
-	private Color emmission;
+	Color emmission;
 	Material material;
 
 	/**
@@ -24,14 +24,30 @@ public abstract class Geometry implements Intersectable {
 	public abstract Vector getNormal(Point3D p);
 
 	/**
-	 * 
-	 * @return getEmmission
+	 * @return Emmission
 	 */
 	public Color getEmmission() {
 		return emmission;
 	}
 
+	/**
+	 * @param emmission the emmission to set
+	 */
+	public void setEmmission(Color emmission) {
+		this.emmission = emmission;
+	}
+
+	/**
+	 * @return Material
+	 */
 	public Material getMaterial() {
 		return material;
+	}
+	
+	/**
+	 * @param Material
+	 */
+	public void setMaterial(Material mat) {
+		this.material = mat;
 	}
 }

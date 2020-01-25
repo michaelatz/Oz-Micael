@@ -12,6 +12,7 @@ import scene.Scene;
 public class Render {
 	ImageWriter IWriter;
 	Scene scene;
+	private Object Vector;
 
 	/**
 	 * @param iWriter
@@ -50,7 +51,7 @@ public class Render {
 		for (int i = 1; i < intersectionPoints.size(); i++) {
 			GeoPoint a = intersectionPoints.get(i);
 			GeoPoint b = intersectionPoints.get(i - 1);
-			if (a.point.distance(scene.getCamera().getLocation()) > b.point.distance(scene.getCamera().getLocation())) {
+			if (a.point.distance(scene.getCamera().getP0()) > b.point.distance(scene.getCamera().getP0())) {
 				closest = a;
 			}
 		}
@@ -64,13 +65,21 @@ public class Render {
 	 * @return color
 	 */
 	private Color calcColor(GeoPoint intersection) {
-		Color color = new Color(scene.getAmbientLight().getIntensity());
-		color = color.add(intersection.geometry.getEmmission());
-		Vector l = new Vector(intersection.point.subtract(scene.getCamera().getLocation()));
-		Vector n = new Vector(intersection.geometry.getNormal(intersection.point));
-		double d=l.dotProduct(n);
-		d*=intersection.geometry.getMaterial().getkD();
-		color=color.add(colors)
+		Color color = scene.getAmbientLight().getIntensity();
+			color = color.add(intersection.geometry.getEmmission());
+			Vector v = intersection.point.subtract(scene.getCamera().getP0()).normalization();
+			Vector n = intersection.geometry.getNormal(intersection.point);
+			int nShininess = intersection.geometry.getMaterial().getnShininess();
+			double kd = intersection.geometry.getMaterial().getkD();
+			double ks = intersection.geometry.getMaterial().getkS();
+			for (LightSource lightSource : scene.getLights()) {
+				Vector l = lightSource.getL(intersection.point);
+				if ((n.dotProduct(l) > 0) && (n.dotProduct(v) > 0) || (n.dotProduct(l) < 0) && (n.dotProduct(v) < 0)) {
+					Color lightIntensity = lightSource.getIntensity(intersection.point);
+					color = color.add(calcDiffusive(kd, l, n, lightIntensity),
+							calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+				}
+			}
 		return color;
 	}
 
@@ -83,7 +92,7 @@ public class Render {
 		for (int i = 0; i < IWriter.getNx(); i++) {
 			for (int j = 0; j < IWriter.getNy(); j++) {
 				if (i % interval == 0 || j % interval == 0) {
-					this.IWriter.writePixel(j, i, java.awt.Color.yellow);
+					this.IWriter.writePixel(j, i, java.awt.Color.white);
 				}
 			}
 		}
@@ -97,4 +106,24 @@ public class Render {
 		IWriter.writeToimage();
 	}
 
+	/**
+	 * calcDiffusive
+	 */
+	public Color calcDiffusive(double kd, Vector l, Vector n, Color lightIntensity) {
+		Math.abs(kd = kd + l.dotProduct(n));
+		return lightIntensity.scale(kd);
+	}
+
+	/**
+	 * calcSpecular
+	 */
+	public Color calcSpecular(double ks, Vector l, Vector n, Vector v, int nsh, Color lightIntensity) {
+		double num = 2 * (l.dotProduct(n));
+		Vector r = l.subtract(n.scale(num)).normalization();
+		double rv = v.scale(-1).dotProduct(r);
+		if (rv <= 0)
+			return new Color(0, 0, 0);
+		return lightIntensity.scale(Math.pow(rv, nsh) * ks);
+
+	}
 }

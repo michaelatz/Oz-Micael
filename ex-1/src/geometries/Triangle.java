@@ -23,6 +23,16 @@ public class Triangle extends Polygon {
 	public Triangle(Point3D... points) {
 		super(points);
 	}
+	
+	/**
+	 * Constructs triangle with points and color
+	 * 
+	 * @param points
+	 * @param color
+	 */
+	public Triangle(Color color, Point3D... points) {
+		super(color, points);
+	}
 
 	// ***************** Operations ******************** //
 	/**

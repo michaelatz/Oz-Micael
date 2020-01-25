@@ -4,7 +4,7 @@ import static primitives.Util.*;
 import primitives.*;
 
 public class Camera {
-	private Point3D location;
+	private Point3D P0;
 	private Vector Vup;
 	private Vector Vto;
 	private Vector Vright;
@@ -19,7 +19,7 @@ public class Camera {
 	 */
 	public Camera(Point3D location, Vector up, Vector to) {
 		if (isZero(up.dotProduct(to))) {
-			this.location = location;
+			this.P0 = location;
 			this.Vup = up;
 			this.Vto = to;
 			up.normalization();
@@ -36,8 +36,8 @@ public class Camera {
 	 * 
 	 * @return Point3D location
 	 */
-	public Point3D getLocation() {
-		return location;
+	public Point3D getP0() {
+		return P0;
 	}
 
 	/**

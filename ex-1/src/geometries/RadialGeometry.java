@@ -1,5 +1,7 @@
 package geometries;
 
+import primitives.Color;
+import primitives.Material;
 import primitives.Point3D;
 import primitives.Vector;
 
@@ -23,6 +25,22 @@ public abstract class RadialGeometry extends Geometry {
 		if (_radius > 0)
 			this._radius = _radius;
 		else {
+			throw new IllegalArgumentException("radius cant be smaller then zero");
+		}
+	}
+
+	/**
+	 * Constructor with radius and color
+	 * 
+	 * @param _radius
+	 * @param color
+	 * @throws IllegalArgumentException when radius "is smaller" than zero
+	 */
+	public RadialGeometry(Color color, double _radius) {
+		if (_radius > 0) {
+			this._radius = _radius;
+			setEmmission(color);
+		} else {
 			throw new IllegalArgumentException("radius cant be smaller then zero");
 		}
 	}

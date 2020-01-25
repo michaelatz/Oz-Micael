@@ -15,7 +15,7 @@ double ka;
 	 * @param Ka
 	 */
 	public AmbientLight(Color _intensity, double ka) {
-		super(_intensity);
+		super(_intensity.scale(ka));
 		this.ka = ka;
 	}
 	/**
@@ -30,7 +30,7 @@ double ka;
 	 * @return 
 	 */
 	public Color getIntensity() {
-		return this.getIntensity().scale(ka);
+		return this._intensity;
 	}
 	
 }

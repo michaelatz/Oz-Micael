@@ -27,6 +27,21 @@ public class Plane extends Geometry {
 		this._p = _p1;
 		this._normal = _p2.subtract(_p1).crossProduct(_p3.subtract(_p1));
 	}
+	
+	/**
+	 * constructor of 3 points and color
+	 * 
+	 * @param _p1
+	 * @param _p2
+	 * @param _p3
+	 * @param _color
+	 */
+	public Plane(Color color, Point3D _p1, Point3D _p2, Point3D _p3) {
+		setEmmission(color);
+		this._p = _p1;
+		this._normal = _p2.subtract(_p1).crossProduct(_p3.subtract(_p1));
+	}
+
 
 	/**
 	 * constructor with point and normal
@@ -38,6 +53,20 @@ public class Plane extends Geometry {
 		this._p = new Point3D(_p);
 		this._normal = new Vector(_normal.normalization());
 	}
+	
+	/**
+	 * constructor with point, normal and color
+	 * 
+	 * @param _p
+	 * @param _normal
+	 * @param color
+	 */
+	public Plane(Color color, Point3D _p, Vector _normal) {
+		setEmmission(color);
+		this._p = new Point3D(_p);
+		this._normal = new Vector(_normal.normalization());
+	}
+
 
 	// ***************** Operations ******************** //
 	/**

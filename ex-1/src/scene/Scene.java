@@ -1,5 +1,7 @@
 package scene;
 
+import java.util.List;
+
 import elements.*;
 import geometries.*;
 import primitives.*;
@@ -10,6 +12,7 @@ public class Scene {
 	Color background;
 	AmbientLight ambientLight;
 	Geometries geometries;
+	List<LightSource> lights;
 	Camera camera;
 	double screenDistance;
 
@@ -115,6 +118,21 @@ public class Scene {
 	 */
 	public double getScreenDistance() {
 		return screenDistance;
+	}
+
+	
+	/**
+	 * @return the lights
+	 */
+	public List<LightSource> getLights() {
+		return lights;
+	}
+
+	/**
+	 * @param lights the lights to set
+	 */
+	public void setLights(List<LightSource> lights) {
+		this.lights = lights;
 	}
 
 	public void add(Intersectable... _geometries) {

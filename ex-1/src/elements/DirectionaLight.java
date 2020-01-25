@@ -2,7 +2,7 @@ package elements;
 
 import primitives.*;
 
-public class DirectionaLight extends Light {
+public class DirectionaLight extends Light implements LightSource{
 	Vector Direction;
 	/**
 	 * DirectionaLight constructor with color and vector
@@ -27,5 +27,13 @@ public class DirectionaLight extends Light {
 	 */
 	public Vector getDirection() {
 		return Direction;
+	}
+	@Override
+	public Color getIntensity(Point3D p) {
+		return getIntensity();
+	}
+	@Override
+	public Vector getL(Point3D p) {
+		return null;
 	}
 }

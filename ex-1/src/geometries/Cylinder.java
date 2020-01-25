@@ -32,6 +32,24 @@ public class Cylinder extends Tube {
 		}
 	}
 
+	/**
+	 * Constructs a cylinder with radius, height and axis ray and color
+	 * 
+	 * @param color
+	 * @param double   _radius, radius of the cylinder
+	 * @param double   _height, height of the cylinder
+	 * @param Ray      _axis, axis of the cylinder
+	 * @throws new IllegalException when radius is smaller than zero
+	 */
+	public Cylinder(Color color, double _radius, double _height, Ray _axis) {
+		super(color, _axis, _radius);
+		if (_height > 0)
+			this.height = _height;
+		else {
+			throw new IllegalArgumentException("Radius is smaller than zero");
+		}
+	}
+
 	// ***************** Getters/Setters ********************** //
 	/**
 	 * Height of he cylinder getter
