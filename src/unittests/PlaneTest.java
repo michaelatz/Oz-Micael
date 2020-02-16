@@ -26,6 +26,9 @@ public class PlaneTest {
 
 	@Test
 	public void findIntersectionsTest() {
+		/**
+		 * EP case
+		 */
 		//ray intersects and orthogonal to the plane 1
 		Ray ray=new Ray(new Vector(0, 0, 1),new Point3D(0, 0, -1));
 		List<GeoPoint> expected = Arrays.asList(new GeoPoint(pl,new Point3D(0, 0, 0)));
@@ -34,12 +37,18 @@ public class PlaneTest {
         ray=new Ray(new Vector(1, 1, 1),new Point3D(-1, -1, -1));
 		expected = Arrays.asList(new GeoPoint(pl,new Point3D(0, 0, 0)));
         assertEquals("Find intersection function error", expected, pl.findIntersections(ray));
+        /**
+		 * BVA case 1
+		 */
         //ray parallel (not included in the plane) 3
         ray=new Ray(new Vector(1, 0, 0),new Point3D(0, 0, -1));
         assertEquals("Find intersection function error", null, pl.findIntersections(ray));
         //ray parallel (included in the plane) 4
         ray=new Ray(new Vector(1, 0, 0),new Point3D(0, 0, 0));
         assertEquals("Find intersection function error", null, pl.findIntersections(ray));
+        /**
+		 * BVA case 2
+		 */
         //ray orthogonal the plane(begins in the plane) 5
         ray=new Ray(new Vector(0, 0, 1),new Point3D(0, 0, 0));
         assertEquals("Find intersection function error", null, pl.findIntersections(ray));

@@ -13,7 +13,7 @@ public class Ray {
 
 	// ***************** Constructors ********************** //
 	/**
-	 * Constructor of ray (with initial point and direction vector)
+	 * Construct a ray with initial point and direction vector
 	 * 
 	 * @param v
 	 * @param p
@@ -23,7 +23,7 @@ public class Ray {
 		this.v = v.normalization();
 		this.head = p;
 	}
-
+	
 	// ***************** Getters/Setters ********************** //
 	/**
 	 * Ray head point getter
@@ -45,7 +45,6 @@ public class Ray {
 
 	// ***************** Administration ******************** //
 	@Override
-
 	public boolean equals(Object other) {
 		if (this == other)
 			return true;

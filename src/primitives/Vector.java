@@ -1,4 +1,3 @@
-
 package primitives;
 
 /**
@@ -129,7 +128,7 @@ public class Vector {
 		Point3D temp = new Point3D(this.head.getX().scale(num), //
 				this.head.getY().scale(num), //
 				this.head.getZ().scale(num)); //
-		return new Vector(temp); 
+		return new Vector(temp);
 	}
 
 	/**
@@ -216,5 +215,4 @@ public class Vector {
 	public Vector normalization() {
 		return new Vector(this).normal();
 	}
-
 }

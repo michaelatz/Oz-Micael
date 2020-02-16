@@ -31,7 +31,7 @@ public final class Coordinate {
 		if (obj == null)
 			return false;
 		if (!(obj instanceof Coordinate))
-			return false; 
+			return false;
 		return usubtract(_coord, ((Coordinate) obj)._coord) == 0.0;
 	}
 

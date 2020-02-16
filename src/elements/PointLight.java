@@ -2,66 +2,58 @@ package elements;
 
 import primitives.*;
 
-public class PointLight extends Light {
+/**
+ * class representing Point Light
+ * 
+ * @author michael
+ * @author oz
+ *
+ */
+public class PointLight extends Light implements LightSource {
 	Point3D position;
-	double KC, KL, KQ;
-	
-	public PointLight(Color _intensity, Point3D position, double kC, double kL, double kQ) {
-		super(_intensity);
+	double kC, kL, kQ;
+
+	// ***************** Constructors ********************** //
+
+	/**
+	 * PintLight constructor with intensity, position, kC, kL, kQ
+	 * 
+	 * @param intensity
+	 * @param position
+	 * @param kC
+	 * @param kL
+	 * @param kQ
+	 */
+	public PointLight(Color intensity, Point3D position, double kC, double kL, double kQ) {
+		super(intensity);
 		this.position = position;
-		KC = kC;
-		KL = kL;
-		KQ = kQ;
+		this.kC = kC;
+		this.kL = kL;
+		this.kQ = kQ;
 	}
 
 	// ***************** Getters/Setters ********************** //
-	/**
-	 * position getter
-	 * @return the position
-	 */
-	public Point3D getPosition() {
-		return position;
-	}
-
-	/**
-	 * @return the KC
-	 */
-	public double getKC() {
-		return KC;
-	}
-
-	/**
-	 * @return the KL
-	 */
-	public double getKL() {
-		return KL;
-	}
-
-	/**
-	 * @return the KQ
-	 */
-	public double getKQ() {
-		return KQ;
-	}
-	/**
-	 * @param KC
-	 * @param KL
-	 * @param KQ
-	 */
-	public void setK(double KQ,double KL,double KC) {
-		this.KQ = KQ;
-		this.KQ = KL;
-		this.KQ = KC;
-	}
-	/**
-	 * @param _kQ the _kQ to set
-	 */
-	public void setPosition(Point3D position) {
-		this.position = position;
-	}
-	public Color getIntensity(Point3D p) {
-		double d=this.position.distance(p);
-		return getIntensity().scale(KC+KL*d+KQ*d*d);
-	}
 	
+	/**
+	 * getter of distance between light position and point
+	 *
+	 * @param p - the point
+	 * @return the distance
+	 */
+	public double getDist(Point3D p) {
+		return this.position.distance(p);
+	}
+
+	@Override
+	public Color getIntensity(Point3D p) {
+		double d2 = p.distance2(position);
+		double d = Math.sqrt(d2);
+		return intensity.reduce(kC + kL * d + kQ * d2);
+	}
+
+	@Override
+	public Vector getL(Point3D p) {
+		return p.subtract(this.position).normal();
+	}
+
 }

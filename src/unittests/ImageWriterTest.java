@@ -10,7 +10,7 @@ import primitives.*;
 public class ImageWriterTest {
 
 	
-			ImageWriter image= new ImageWriter("Moshe",500,500,1000,1000);
+			ImageWriter image= new ImageWriter("grid",1000,1000,500,500);
 			@Test
 			public void renderTest() {
 				for(int i=0;i<image.getNx();i++)

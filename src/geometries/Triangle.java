@@ -1,7 +1,5 @@
 package geometries;
 
-import java.util.List;
-
 import primitives.*;
 
 /**
@@ -14,27 +12,6 @@ import primitives.*;
 public class Triangle extends Polygon {
 
 	// ***************** Constructors ********************** //
-	/**
-	 * Constructs triangle with points
-	 * 
-	 * @param points
-	 * @param plane
-	 */
-	public Triangle(Point3D... points) {
-		super(points);
-	}
-
-	// ***************** Operations ******************** //
-	/**
-	 * get normal function of triangle, we use in the plane's function
-	 * 
-	 * @param Point3D
-	 * @return normal
-	 */
-	@Override
-	public Vector getNormal(Point3D p) {
-		return this._plane.getNormal(p);
-	}
 
 	/**
 	 * constructs a triangle from three points
@@ -45,5 +22,25 @@ public class Triangle extends Polygon {
 	 */
 	public Triangle(Point3D p1, Point3D p2, Point3D p3) {
 		super(p1, p2, p3);
+	}
+
+	/**
+	 * Constructs triangle with 3 points and color
+	 * 
+	 * @param points
+	 * @param color
+	 */
+	public Triangle(Color color, Point3D p1, Point3D p2, Point3D p3) {
+		super(color, p1, p2, p3);
+	}
+
+	/**
+	 * Constructs triangle with 3 points, color and material
+	 * 
+	 * @param points
+	 * @param color
+	 */
+	public Triangle(Material material, Color color, Point3D p1, Point3D p2, Point3D p3) {
+		super(material, color, p1, p2, p3);
 	}
 }

@@ -1,15 +1,24 @@
 package scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import elements.*;
 import geometries.*;
 import primitives.*;
-import elements.*;
 
+/**
+ * class representing the scene
+ * 
+ * @author michael
+ * @author oz
+ */
 public class Scene {
 	String name;
-	Color background;
-	AmbientLight ambientLight;
-	Geometries geometries;
+	Color background ;
+	AmbientLight ambientLight ;
+	Geometries geometries = new Geometries();
+	List<LightSource> _lights = new ArrayList<LightSource>();
 	Camera camera;
 	double screenDistance;
 
@@ -21,7 +30,6 @@ public class Scene {
 	 */
 	public Scene(String name) {
 		this.name = name;
-		this.geometries = null;
 	}
 
 	// ***************** Getters/Setters ********************** //
@@ -78,16 +86,16 @@ public class Scene {
 	public Geometries getGeometries() {
 		return geometries;
 	}
-
+	
 	/**
 	 * geometries setter
 	 * 
-	 * @param the geometries
+	 * @param geometries
 	 */
 	public void setGeometries(Geometries geometries) {
 		this.geometries = geometries;
 	}
-	
+
 	/**
 	 * camera getter
 	 * 
@@ -101,11 +109,9 @@ public class Scene {
 	 * camera and screenDistance setter
 	 * 
 	 * @param the camera
-	 * @param the screenDistance
 	 */
-	public void setCamera(Camera camera, double screenDistance) {
+	public void setCamera(Camera camera) {
 		this.camera = camera;
-		this.screenDistance = screenDistance;
 	}
 
 	/**
@@ -117,12 +123,82 @@ public class Scene {
 		return screenDistance;
 	}
 
-	public void add(Intersectable... _geometries) {
-		if (!geometries.equals(null)) {
-			for (int i = 0; i < _geometries.length; ++i) {
-				geometries.add(_geometries[i]);
-			}
-		}
+	/**
+	 * screen Distance setter
+	 * 
+	 * @param distance
+	 */
+	public void setScreenDistance(double distance) {
+		this.screenDistance = distance;
 	}
+
+	/**
+	 * lights getter
+	 * 
+	 * @return the lights
+	 */
+	public List<LightSource> getLights() {
+		return _lights;
+	}
+
+
+	/**
+	 * lights setter
+	 * 
+	 * @param lights
+	 */
+	public void setLights(List<LightSource> lights) {
+		this._lights = lights;
+	}
+
+    // ***************** Operations ******************** //
+
+    /**
+     * changes the camera location and distance from view plane
+     *
+     * @param cam
+     * @param dist
+     */
+    public void updateCamera(Camera cam, double dist) {
+        camera = cam;
+        screenDistance = dist;
+    }
+
+    /**
+     * changes the background color
+     *
+     * @param color
+     */
+    public void updateBackground(Color color) {
+        background = color;
+    }
+
+    /**
+     * changes the ambient light
+     *
+     * @param amb
+     */
+    public void updateAmbient(AmbientLight amb) {
+        ambientLight = amb;
+    }
+
+    /**
+     * adds shapes to the 3D model
+     *
+     * @param shapes
+     */
+    public void addIntersectable(Intersectable... shapes) {
+        geometries.add(shapes);
+    }
+
+    /**
+     * adds lights to the scene
+     *
+     * @param lights
+     */
+    public void addLight(LightSource... lights) {
+        for (int i = 0; i < lights.length; ++i)
+            _lights.add(lights[i]);
+    }
 
 }

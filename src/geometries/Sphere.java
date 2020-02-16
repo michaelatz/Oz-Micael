@@ -11,7 +11,6 @@ import static primitives.Util.*;
  * 
  * @author michael
  * @author oz
- *
  */
 public class Sphere extends RadialGeometry {
 	Point3D _center;
@@ -25,6 +24,31 @@ public class Sphere extends RadialGeometry {
 	 */
 	public Sphere(double _radius, Point3D _center) {
 		super(_radius);
+		this._center = _center;
+	}
+
+	/**
+	 * Constructor with radius, center point and color
+	 * 
+	 * @param _radius (of the sphere)
+	 * @param _center (of the sphere)
+	 * @param color
+	 */
+	public Sphere(Color color, double _radius, Point3D _center) {
+		super(color, _radius);
+		this._center = _center;
+	}
+
+	/**
+	 * Constructor with radius, center point and color and material
+	 * 
+	 * @param _radius  (of the sphere)
+	 * @param _center  (of the sphere)
+	 * @param color
+	 * @param material
+	 */
+	public Sphere(Material material, Color color, double _radius, Point3D _center) {
+		super(material, color, _radius);
 		this._center = _center;
 	}
 
@@ -42,19 +66,19 @@ public class Sphere extends RadialGeometry {
 
 	/**
 	 * find the Intersections point of the sphere
+	 * 
 	 * @param ray
 	 * @return list of intersectionPoint
 	 */
 	@Override
 	public List<GeoPoint> findIntersections(Ray ray) {
 		List<GeoPoint> intersectionPoint = null;
-		Point3D o = this._center;// center
+		Point3D o = this._center;
 		Point3D p0 = ray.getHead();
-		Sphere sph =new Sphere(getRadius(), o);
 		Vector v = ray.getV();
 		if (o.equals(p0)) {
 			intersectionPoint = new ArrayList<>();
-			GeoPoint p=new GeoPoint(this,p0.add(v.scale(this._radius)));
+			GeoPoint p = new GeoPoint(this, p0.add(v.scale(this._radius)));
 			intersectionPoint.add(p);
 			return intersectionPoint;
 		}
@@ -71,13 +95,13 @@ public class Sphere extends RadialGeometry {
 		double t2 = alignZero(tm - th);// p2's scalar
 		if (t1 > 0) {// t>0
 			intersectionPoint = new ArrayList<>();
-			GeoPoint p1=new GeoPoint(this,p0.add(v.scale(t1)));
+			GeoPoint p1 = new GeoPoint(this, p0.add(v.scale(t1)));
 			intersectionPoint.add(p1);
 		}
 		if (t2 > 0) {// t>=0
 			if (intersectionPoint == null)
 				intersectionPoint = new ArrayList<>();
-			GeoPoint p2=new GeoPoint(this,p0.add(v.scale(t2)));
+			GeoPoint p2 = new GeoPoint(this, p0.add(v.scale(t2)));
 			intersectionPoint.add(p2);
 		}
 		return intersectionPoint;

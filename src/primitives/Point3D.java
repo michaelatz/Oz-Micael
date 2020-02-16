@@ -1,4 +1,3 @@
-
 package primitives;
 
 /**
@@ -35,7 +34,6 @@ public class Point3D {
 	 * @param y
 	 * @param z
 	 */
-
 	public Point3D(double x, double y, double z) {
 		Coordinate c1 = new Coordinate(x);
 		Coordinate c2 = new Coordinate(y);

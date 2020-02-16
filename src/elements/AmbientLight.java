@@ -3,34 +3,33 @@ package elements;
 import primitives.Color;
 
 /**
+ * class representing Ambient Light
+ * 
  * @author michael
- *@author oz
+ * @author oz
  */
 public class AmbientLight extends Light {
-double ka;
+	double ka;
+
 //***************** Constructors ********************** //
 	/**
 	 * AmbientLight constructor with color and double
-	 * @param Ia
+	 * 
+	 * @param intensity
 	 * @param Ka
 	 */
-	public AmbientLight(Color _intensity, double ka) {
-		super(_intensity);
+	public AmbientLight(Color intensity, double ka) {
+		super(intensity.scale(ka));
 		this.ka = ka;
 	}
-	/**
-	 * AmbientLight constructor with color (intensity)
-	 * @param intensity
-	 */
-	public AmbientLight(Color intensity) {
-		super(intensity);	}
 	// ***************** Getters/Setters ********************** //
+
 	/**
-	 * intensity getter
-	 * @return 
+	 * getter for the ambient lighting
+	 *
+	 * @return light intensity
 	 */
 	public Color getIntensity() {
-		return this.getIntensity().scale(ka);
+		return intensity;
 	}
-	
 }

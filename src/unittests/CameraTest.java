@@ -18,7 +18,7 @@ public class CameraTest {
 
 	@Test
 	public void testConstructor() {
-		assertEquals("Camera test error", new Vector(-1, 0, 0), c.getRight());
+		assertEquals("Camera test error", new Vector(-1, 0, 0), c.get_vRight());
 	}
 
 	@Test
