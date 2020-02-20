@@ -1,7 +1,10 @@
 package renderer;
 
+import elements.Camera;
 import elements.LightSource;
+import geometries.Sphere;
 import primitives.Color;
+import primitives.Material;
 import primitives.Point3D;
 import primitives.Ray;
 import primitives.Vector;
@@ -10,6 +13,7 @@ import scene.Scene;
 import static geometries.Intersectable.GeoPoint;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * class represents a renderer for a scene
@@ -35,7 +39,7 @@ public class Render {
 	 * renders the scene to a 2D picture
 	 */
 	public void renderImage() {
-		
+
 		for (int i = 0; i < image.getNy(); ++i)
 			for (int j = 0; j < image.getNx(); ++j) {
 				Ray ray = scene.getCamera().constructRayThroughPixel(image.getNx(), image.getNy(), j, i,
@@ -47,14 +51,31 @@ public class Render {
 	}
 
 	/**
+	 * renders the scene to a 2D picture for DOF
+	 */
+	public void renderImageDOF(Sphere aperture, double focalDistance) {
+
+		for (int i = 0; i < image.getNy(); ++i)
+			for (int j = 0; j < image.getNx(); ++j) {
+				Ray ray = scene.getCamera().constructRayThroughPixel(image.getNx(), image.getNy(), j, i,
+						scene.getScreenDistance(), image.getHeight(), image.getWidth());
+				GeoPoint closestPoint = findClosestIntersection(ray);
+				image.writePixel(j, i,
+						closestPoint == null ? scene.getBackground().getColor()
+								: generateDOFfromCamera(this.image, this.scene, aperture, focalDistance, closestPoint)
+										.getColor());
+			}
+	}
+
+	/**
 	 * prints a 2D grid on the rendered picture
 	 *
 	 * @param interval - the number of pixels between each line
 	 * @param color    - the color of the grid
 	 */
 	public void printGrid(int interval, primitives.Color color) {
-		
-		for (int i = 1; i < image.getNy(); i++) {		
+
+		for (int i = 1; i < image.getNy(); i++) {
 			for (int j = 1; j < image.getNx(); j++)
 				if (i % interval == 0 || j % interval == 0)
 					image.writePixel(j, i, color.getColor());
@@ -66,71 +87,6 @@ public class Render {
 	 */
 	public void writeToImage() {
 		image.writeToimage();
-	}
-
-	/*********** CalcColor function *************/
-
-	private static final int MAX_CALC_COLOR_LEVEL = 10;
-
-	/**
-	 * calculates the color at a certain point (pixel) by calling calculator
-	 * function
-	 *
-	 * @param - GeoPoint in the space (pixel on the view plane)
-	 * @return the color of the point
-	 */
-	private Color calcColor(GeoPoint geopoint, Ray inRay) {
-		return calcColor(geopoint, inRay, MAX_CALC_COLOR_LEVEL, 1.0).add(scene.getAmbientLight().getIntensity());
-	}
-
-	private static final double MIN_CALC_COLOR_K = 0.001;
-
-	/**
-	 * calculates the color at a certain point 
-	 *
-	 * @param - GeoPoint in the space (pixel on the view plane)
-	 * @return the color of the point
-	 */
-	private Color calcColor(GeoPoint geopoint, Ray inRay, int level, double k) {
-		if (level == 0 || k < MIN_CALC_COLOR_K)
-			return Color.BLACK;
-		Color color = geopoint.geometry.getEmission(); // remove Ambient Light
-
-		Vector v = geopoint.point.subtract(scene.getCamera().getP0()).normal();
-		Vector n = geopoint.geometry.getNormal(geopoint.point);
-		double kd = geopoint.geometry.getMaterial().getkD();
-		double ks = geopoint.geometry.getMaterial().getkS();
-		int nShininess = geopoint.geometry.getMaterial().getNShininess();
-		for (LightSource lightSource : scene.getLights()) {
-			Vector l = lightSource.getL(geopoint.point);
-			double e1 = n.dotProduct(l);
-			double e2 = n.dotProduct(v);
-			if ((e1 > 0 && e2 > 0) || (e1 < 0 && e2 < 0)) {
-				double ktr = transparency(l, n, geopoint, lightSource.getDist(geopoint.point));
-				if (ktr * k > MIN_CALC_COLOR_K) {
-					Color lightIntensity = lightSource.getIntensity(geopoint.point).scale(ktr);
-					color = color.add(calcDiffusive(kd, l, n, lightIntensity),
-							calcSpecular(ks, l, n, v, nShininess, lightIntensity));
-				}
-			}
-		}
-		double kr = geopoint.geometry.getMaterial().getKr();
-		double kkr = k * kr;
-		if (kkr > MIN_CALC_COLOR_K) {
-			Ray reflectedRay = constructReflectedRay(n, geopoint.point, inRay);
-			GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
-			if (reflectedPoint != null)
-				color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
-		}
-		double kt = geopoint.geometry.getMaterial().getKt();
-		double kkt = k * kt;
-		if (kkt > MIN_CALC_COLOR_K) {
-			Ray refractedRay = constructRefractedRay(geopoint.point, inRay);
-			GeoPoint refractedPoint = findClosestIntersection(refractedRay);
-			if (refractedPoint != null)
-				color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
-		}
-		return color;
 	}
 
 	private static final double EPS = 1.0;
@@ -265,4 +221,147 @@ public class Render {
 		}
 		return minPoint;
 	}
+
+	/*********** CalcColor function *************/
+
+	private static final int MAX_CALC_COLOR_LEVEL = 10;
+
+	/**
+	 * calculates the color at a certain point (pixel) by calling calculator
+	 * function
+	 *
+	 * @param -   GeoPoint in the space (pixel on the view plane)
+	 * @param ray
+	 * @return the color of the point
+	 */
+	private Color calcColor(GeoPoint geopoint, Ray inRay) {
+		return calcColor(geopoint, inRay, MAX_CALC_COLOR_LEVEL, 1.0).add(scene.getAmbientLight().getIntensity());
+	}
+
+	private static final double MIN_CALC_COLOR_K = 0.001;
+
+	/**
+	 * calculates the color at a certain point
+	 *
+	 * @param -      GeoPoint in the space (pixel on the view plane)
+	 * @param ray
+	 * @param int    level
+	 * @param double k
+	 * @return the color of the point
+	 */
+	private Color calcColor(GeoPoint geopoint, Ray inRay, int level, double k) {
+		if (level == 0 || k < MIN_CALC_COLOR_K)
+			return Color.BLACK;
+		Color color = geopoint.geometry.getEmission(); // remove Ambient Light
+
+		Vector v = geopoint.point.subtract(scene.getCamera().getP0()).normal();
+		Vector n = geopoint.geometry.getNormal(geopoint.point);
+		Material mat = geopoint.geometry.getMaterial();
+		double kd = mat.getkD();
+		double ks = mat.getkS();
+		int nShininess = mat.getNShininess();
+		for (LightSource lightSource : scene.getLights()) {
+			Vector l = lightSource.getL(geopoint.point);
+			double e1 = n.dotProduct(l);
+			double e2 = n.dotProduct(v);
+			if ((e1 > 0 && e2 > 0) || (e1 < 0 && e2 < 0)) {
+				double ktr = transparency(l, n, geopoint, lightSource.getDist(geopoint.point));
+				if (ktr * k > MIN_CALC_COLOR_K) {
+					Color lightIntensity = lightSource.getIntensity(geopoint.point).scale(ktr);
+					color = color.add(calcDiffusive(kd, l, n, lightIntensity),
+							calcSpecular(ks, l, n, v, nShininess, lightIntensity));
+				}
+			}
+		}
+		double kr = geopoint.geometry.getMaterial().getKr();
+		double kkr = k * kr;
+		if (kkr > MIN_CALC_COLOR_K) {
+			Ray reflectedRay = constructReflectedRay(n, geopoint.point, inRay);
+			GeoPoint reflectedPoint = findClosestIntersection(reflectedRay);
+			if (reflectedPoint != null)
+				color = color.add(calcColor(reflectedPoint, reflectedRay, level - 1, kkr).scale(kr));
+		}
+		double kt = geopoint.geometry.getMaterial().getKt();
+		double kkt = k * kt;
+		if (kkt > MIN_CALC_COLOR_K) {
+			Ray refractedRay = constructRefractedRay(geopoint.point, inRay);
+			GeoPoint refractedPoint = findClosestIntersection(refractedRay);
+			if (refractedPoint != null)
+				color = color.add(calcColor(refractedPoint, refractedRay, level - 1, kkt).scale(kt));
+		}
+		return color;
+	}
+
+	private static Random random = new Random(1);
+	private static int count = 0;
+
+	/**
+	 * Calculation the depth of field from the camera
+	 * 
+	 * @param img
+	 * @param scene
+	 * @param aperture
+	 * @param focalDistance
+	 * @param pixel
+	 */
+	Color generateDOFfromCamera(ImageWriter img, Scene scene, Sphere aperture, double focalDistance, GeoPoint pixel) {
+		Ray fromCam = new Ray(pixel.point.subtract(scene.getCamera().getP0()), scene.getCamera().getP0());
+		Vector vec = fromCam.getV().normal().scale(focalDistance);
+		Point3D focalPoint = fromCam.getHead().add(vec);// The focal point
+		Color pixelColor = Color.BLACK;
+		
+		// Casting of 15 different rays threw each pixel
+		for (int i = 0; i < 15; i++) {
+			double angle = random.nextDouble() * 360;
+			double newRadius = random.nextDouble() * (aperture.getRadius()-1);
+			double cos=Math.cos(angle);
+			double sin=Math.sin(angle);
+			Point3D newPoint = new Point3D((newRadius*cos), (newRadius * sin), 0);
+			Point3D onFocal = aperture.getCenter().add(new Vector(newPoint));// point on the aperture
+			Vector direction = focalPoint.subtract(onFocal);
+			Ray focalRay = new Ray(direction, onFocal);
+			Color addColor=calcColor(pixel, focalRay);
+			pixelColor = pixelColor.add(addColor);
+		}
+		System.out.println(count++);
+		return pixelColor.reduce(15);
+	}
+
+	/*
+	 * void generateDOFfromEye(ImageWriter img, Camera camera, Scene scene, double
+	 * focusPoint) { double pixelWidth = 1.0f / (double) img.getWidth(); double
+	 * pixelHeight = 1.0f / (double) img.getHeight();
+	 * scene.setBackground(Color.BLACK); for (int y = 0; y < img.getHeight(); ++y) {
+	 * for (int x = 0; x < img.getWidth(); ++x) { //Center of the current pixel
+	 * double px = ( x * pixelWidth) - 0.5; double py = ( y * pixelHeight) - 0.5;
+	 * 
+	 * Ray cameraSpaceRay = Ray(Vector(0,0,0,1), Vector(px, py, 1.0f, 0.0f));
+	 * 
+	 * Ray ray = camera.Transform() * cameraSpaceRay;
+	 * 
+	 * int depth = 0; int focaldistance = 2502; Color blend(0,0,0,0);
+	 * 
+	 * 
+	 * //Stratified Sampling i.e. Random sampling (with 16 samples) inside each
+	 * pixel to add DOF for(int i = 0; i < 16; i++) { //random values between [-1,1]
+	 * float rw = (static_cast<double>(rand() % RAND_MAX) / RAND_MAX) * 2.0f - 1.0f;
+	 * float rh = (static_cast<double>(rand() % RAND_MAX) / RAND_MAX) * 2.0f - 1.0f;
+	 * // Since eye position is (0,0,0,1) I generate samples around that point with
+	 * a 3x3 aperture size window. float dx = ( (rw) * 3 * pixelWidth) - 0.5; float
+	 * dy = ( (rh) * 3 * pixelHeight) - 0.5;
+	 * 
+	 * //Now here I compute point P in the scene where I want to focus my scene
+	 * Vector P = Vector(0,0,0,1) + focusPoint * ray.Direction(); Vector dir = P -
+	 * Vector(dx, dy, 0.0f, 1.0f);
+	 * 
+	 * 
+	 * ray = Ray(Vector(dx,dy,0.0f,1.0f), dir); ray = camera.Transform() * ray;
+	 * 
+	 * //Calling the phong shader to render the scene blend += phongShader(scene,
+	 * ray, depth, output);
+	 * 
+	 * } blend /= 16.0f;
+	 * 
+	 * img(x, y) += blend; } } }
+	 */
 }

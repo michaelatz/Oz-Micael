@@ -37,6 +37,7 @@ public class DirectionalLight extends Light implements LightSource {
 	}
 	
 	public double getDist(Point3D p) {
-		return 1000;
+		return 1000000;
 	}
+	
 }

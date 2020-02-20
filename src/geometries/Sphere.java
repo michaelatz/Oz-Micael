@@ -52,6 +52,17 @@ public class Sphere extends RadialGeometry {
 		this._center = _center;
 	}
 
+	// ***************** Getters/Setters ********************** //
+
+	/**
+	 * center getter
+	 * 
+	 * @return the center
+	 */
+	public Point3D getCenter() {
+		return _center;
+	}
+	
 	// ***************** Operations ******************** //
 	/**
 	 * get normal function

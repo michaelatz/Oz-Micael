@@ -159,9 +159,9 @@ public class Scene {
      * @param cam
      * @param dist
      */
-    public void updateCamera(Camera cam, double dist) {
+    public void updateCamera(Camera cam, double distance) {
         camera = cam;
-        screenDistance = dist;
+        screenDistance = distance;
     }
 
     /**
